@@ -1,1 +1,39 @@
-Hello, World!
+<!DOCTYPE html>
+<!--the LANG ATTRIBUTE in html tag so the whole html file will be in english (inherit all the atribute in the html tag)-->
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="gamestyle.css">
+        <meta charset="utf-8">
+        <title>RPG - Dragon Repeller</title>
+        <!--SCRIPT ELEMENT is to load javascript into the html file-->
+        <!--SRC ATTRIBUTE to link the html file with the javascript file-->
+        <!--Q1: WHY href for css and src for js? WHen to use them? blank-->
+        <!--The (./file.ext=file.ext) is where you are right now and go up a folder-level uses (../)-->
+        <script src="./game.js"></script>
+    </head>
+    <body>
+        <div id="game">
+            <div id="stats">
+                <span class="stat">XP: <strong><span id="xpText">0</span></strong></span>
+                <span class="stat">Health: <strong><span id="healthText">100</span></strong></span>
+                <span class="stat">Gold: <strong><span id="goldText">50</span></strong></span>
+            </div>
+            <div id="controls">
+                <button id="button1">Go to store</button>
+                <button id="button2">Go to cave</button>
+                <button id="button3">Fight dragon</button>
+            </div>
+            <div id="monsterStats">
+                <!-- Q2:Why is it not displyayed until call?-->
+                <span class="stat">Monster Name: <strong><span id="monsterName"></span></strong></span>
+                <span class="stat">Monster Health: <strong><span id="monsterHealth"></span></strong></span>
+            </div>
+            <div id="text">
+                Welcome to Dragon Repeller. You must defeat the dragon that is preventing people from leaving the town. You are in the town square. Where do you want to go? Use the buttons above.
+            </div>
+        </div>
+        <!--The position of the element SCRIPT decides until where the html is read. 
+        If placed here, the browser will read the entire html doc till this point before execute the code in Javascript file-->
+        <script src="./game.js"></script>
+    </body>
+</html>
