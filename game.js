@@ -60,20 +60,40 @@ const locations = [
     "button text": ["Attack","Dodge","Run"],
     "button functions": [attack,dodge,goTown],
     text: "You are fighting a monster."
+  },
+  {
+    name: "kill monster",
+    "button text": ["Go to town square","Go to town square","Go to town square"],
+    "button functions": [goTown,goTown,goTown],
+    text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.'
+  },
+  {
+    name:"lose",
+    "button text": ["REPLAY?","REPLAY?","REPLAY?"],
+    "button functions": [restart,restart,restart],
+    text:"You die. &#x2620;"
+  },
+  {
+    name:"win",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;"
   }
+//Q2: EMOICON??? What does innerHTML relate to this?
 ];
 button1.onclick = goStore;
 button2.onclick = goCave;
 button3.onclick = fightDragon;
 
 function update(location){
+  monsterStats.style.display = "none";
   button1.innerText = location["button text"][0]; //access the first element of the value associated with button text key/properties: an array 
   button2.innerText = location["button text"][1];
   button3.innerText = location["button text"][2];
   button1.onclick = location["button functions"][0];
   button2.onclick = location["button functions"][1];
   button3.onclick = location["button functions"][2];
-  text.innerText = location.text;
+  text.innerHTML = location.text; //The innerHTML property allows you to access or modify the content inside an HTML element using JavaScript.Q1???
 }
 //innerText properties is used to update the text corresponded to the element in the html file
 function goTown() {
@@ -153,23 +173,57 @@ function fightDragon() {
 //this generates a random number between 1 and 5: Math.floor(Math.random() * 5) + 1;: (0/1 * 5) + 1 = (1,6)
 //Q1: Does the random give decimals?
 function attack() {
-  text.innerText = "The "+monsters[fighting].name+" attacks.";
-  text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name+".";
-  health -= monsters[fighting].level;
-  monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random()*xp)+1;
+  text.innerText = "The " + monsters[fighting].name + " attacks.";
+  text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name + ".";
+  health -= getMonsterAttackValue(monsters[fighting].level);
+  if (isMonsterHit()) {
+    monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
+  }else {text.innerText += " You miss."}
   healthText.innerText = health;
   monsterHealthText.innerText = monsterHealth;
+  if (health <= 0) {
+    lose();
+  } else if (monsterHealth <= 0) {
+    if (fighting === 2) {winGame();} else{defeatMonster();}
+  }
 } 
-if (health<=0) {
-  lose()
 
-}else if (monsterHealth <= 0) {
-  defeatMonster()
+function getMonsterAttackValue(level) {
+  const hit = (level *5) - (Math.floor(Math.random()*xp));
+  console.log(hit);
+  return hit >0 ? hit:0;//The ternary operator is a conditional operator and can be used as a one-line if-else statement. The syntax is: condition ? expressionIfTrue : expressionIfFalse.
+
 }
-function dodge() {}
+function dodge() {
+  text.innerText = "You dodge the attack from the "+monsters[fighting].name;
+}
 
-function defeatMonster () {}
-function lose () {}
+function defeatMonster () {
+  gold+=Math.floor(monsters[fighting].level*6.7);
+  xp+=monsters[fighting].level;
+  goldText.innerText = gold;
+  xpText.innerText = xp;
+  update(locations[4]);
+}
+function lose () {
+  update(locations[5]);
+}
+
+function winGame() {
+  update(locations[6]);
+}
+
+function restart() {
+  xp=0;
+  health = 100;
+  gold = 50;
+  currentWeaponIndex = 0;
+  inventory = ["stick"];
+  goldText.innerText = gold;
+  healthText.innerText = health;
+  xpText.innerText = xp;
+  goTown();
+}
 // initialize buttons
 //the variable name assgined with the element.onclick = the function you want to call. onclick property execute the function when clicked on
 
