@@ -4,7 +4,7 @@ let gold=50;
 let currentWeaponIndex = 0;
 let fighting;
 let monsterHealth;
-let invetory = ["stick"];
+let inventory = ["stick"];
 
 /*JavaScript interacts with the HTML using the Document Object Model, or DOM. 
 The DOM is a tree of objects that represents the HTML. 
@@ -64,7 +64,7 @@ const locations = [
   {
     name: "kill monster",
     "button text": ["Go to town square","Go to town square","Go to town square"],
-    "button functions": [goTown,goTown,goTown],
+    "button functions": [goTown,goTown,easterEgg],
     text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.'
   },
   {
@@ -78,8 +78,14 @@ const locations = [
     "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
     "button functions": [restart, restart, restart],
     text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;"
+  },
+  {
+    name: "easter egg",
+    "button text": ["2","8","Go to town square?"],
+    "button functions": [pickTwo,pickEight,goTown],
+    text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!"
   }
-//Q2: EMOICON??? What does innerHTML relate to this?
+//Q2: EMOTICON??? What does innerHTML relate to this?
 ];
 button1.onclick = goStore;
 button2.onclick = goCave;
@@ -136,7 +142,7 @@ function buyWeapon(){
 }
 
 function sellWeapon() {
-  if (invetory.length >1) {
+  if (inventory.length >1) {
     gold += 15;
     goldText.innerText = gold;
     let currentWeapon = inventory.shift();
@@ -186,6 +192,10 @@ function attack() {
   } else if (monsterHealth <= 0) {
     if (fighting === 2) {winGame();} else{defeatMonster();}
   }
+  if (Math.random() <= .1 && inventory.length!==1) {
+    text.innerText += " Your " + inventory.pop()+ " breaks.";
+    currentWeaponIndex--;
+  }
 } 
 
 function getMonsterAttackValue(level) {
@@ -194,6 +204,11 @@ function getMonsterAttackValue(level) {
   return hit >0 ? hit:0;//The ternary operator is a conditional operator and can be used as a one-line if-else statement. The syntax is: condition ? expressionIfTrue : expressionIfFalse.
 
 }
+//Q3: No order in function???
+function isMonsterHit() {
+  return Math.random() > .2 || health <20;
+}
+
 function dodge() {
   text.innerText = "You dodge the attack from the "+monsters[fighting].name;
 }
@@ -230,3 +245,26 @@ function restart() {
 //Similar to dictionary in, Objects are non primitive data types that store key-value pairs.
 //Non primitive data types are mutable data types that are: not undefined, null, boolean, number, string, or symbol. 
 //Mutable means that the data can be changed after it is created.
+
+function easterEgg (){update(locations[7])}
+function pick(guess) {
+  const numbers = [];
+  while (numbers.length<10) {
+  numbers.push(Math.floor(Math.random()*11));
+  }
+  text.innerText = "You picked "+guess+". Here are the random numbers:\n";
+  for (let i = 0;i<10;i++){text.innerText += numbers[i]+"\n";}
+  if (numbers.includes(guess)) {
+    text.innerText += "Right! You win 20 gold!";
+    gold+=20;
+    goldText.innerText = gold;
+  } else {
+    text.innerText += "Wrong! You lose 10 health!"
+    health -= 10;
+    healthText.innerText = health;
+    if (health<=0) {lose()}
+  }
+
+}
+function pickTwo () {pick(2)};
+function pickEight () {pick(8)}
